@@ -5,7 +5,7 @@ import * as http from 'http';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors'
-
+import cache from "./middlewares/cacheRequest.mjs"
 dotenv.config()
 
 
@@ -17,6 +17,7 @@ import config from './config/config.mjs';
 
 import { router as uploadRouter } from './routes/uploadRoute.mjs';
 import { router as yahooRouter } from './routes/yahooRoute.mjs';
+import { router as coinRouter } from './routes/coinRoute.mjs';
 //import { sendMail } from "./mailsend.mjs";
 
 
@@ -35,6 +36,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.use('/user', uploadRouter);
 app.use("/yahooapi",yahooRouter)
+app.use("/coin",cache(600),coinRouter)
 
 // error handlers
 // catch 404 and forward to error handler
