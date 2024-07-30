@@ -47,8 +47,7 @@ console.log(file)
   try {
     const { userId } = req.params;
     //const file = await re.files.photo;
-    const file = req.files.photo;
-
+    const file = req.files.photo[0];
     const uploadFileFirebase = await uploadFile(file.filepath, file.newFilename);
     if (!uploadFileFirebase) {
       return response(res, 400, 'error uploading to firebase', null);
