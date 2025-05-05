@@ -87,7 +87,7 @@ pipeline {
             steps {
                 sh '''
                     mkdir -p archive-output
-                    rsync -av --progress ./ethervest-img-server ./archive-output
+                    rsync -av --progress ./ ./archive-output
                     cd archive-output
                     zip -r ../ethervest-img-server.zip ethervest-img-server
                 '''
