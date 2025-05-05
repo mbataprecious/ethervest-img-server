@@ -90,7 +90,7 @@ pipeline {
                     sudo apt-get install -y zip
                     rsync -av --progress ./ ./archive-output
                     cd archive-output
-                    zip -r ../ethervest-img-server.zip ethervest-img-server
+                    zip -r ../ethervest-img-server.zip .
                 '''
                 archiveArtifacts artifacts: 'ethervest-img-server.zip', fingerprint: true
             }
