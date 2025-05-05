@@ -87,6 +87,7 @@ pipeline {
             steps {
                 sh '''
                     mkdir -p archive-output
+                    sudo apt-get install -y zip
                     rsync -av --progress ./ ./archive-output
                     cd archive-output
                     zip -r ../ethervest-img-server.zip ethervest-img-server
