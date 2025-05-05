@@ -59,7 +59,7 @@ pipeline {
             db_version = '5.6'
         }
         steps{
-            echo ${env.db_version}
+            echo "${env.db_version}"
             sh 'echo $db_version'
             script{
                 print env.db_version
