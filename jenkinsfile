@@ -1,0 +1,75 @@
+pipeline {
+    agent {label 'my_node_1_label'}
+
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'which branch to build on')
+      }
+
+    environment{
+        version = '2.3'
+        db_name = 'sql'
+    }
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Hi') {
+            steps {
+                echo 'Hi this is precious'
+            }
+        }
+        stage('trying jeninsfile'){
+            steps{
+                echo "this is running from github"
+                echo '${env.db_name}'
+                echo '${env.version}'
+            }
+        }
+        stage('Git checkout'){
+            steps{
+                git branch: '$BRANCH_NAME', credentialsId: 'git-credentials', url: 'https://github.com/mbataprecious/ethervest-img-server.git'
+                sh 'ls -lrt'
+            }
+        }
+        stage('list files'){
+            steps{
+                sh '''
+                ls -lrt
+                pwd
+                who
+                '''
+            }
+        }
+
+       stage('parameter'){
+       when {
+        expression{
+            env.BRANCH_NAME=='main'
+        }
+       }
+        steps{
+            sh 'echo $BRANCH_NAME'
+        }
+       }
+       stage('env variable'){
+        environment{
+            db_version = '5.6'
+        }
+        steps{
+            echo '${env.db_version}'
+            sh 'echo $db_version'
+            script{
+                print env.db_version
+            }
+        }
+       }
+    }
+    post{
+        always{
+            echo "i will run always and say Hello"
+        }
+    }
+}
