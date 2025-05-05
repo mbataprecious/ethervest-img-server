@@ -54,6 +54,47 @@ pipeline {
             sh 'echo $BRANCH_NAME'
         }
        }
+
+        stage('Ensure Node Installed') {
+            steps {
+                sh '''
+                    if ! command -v node >/dev/null 2>&1; then
+                      echo "Node.js not found. Installing with apt..."
+                      sudo apt-get update
+                      sudo apt-get install -y nodejs npm
+                    else
+                      echo "Node.js is already installed"
+                      node -v
+                      npm -v
+                    fi
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm ci'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build || echo "No build step defined"'
+            }
+        }
+
+        stage('Archive App') {
+            steps {
+                sh '''
+                    mkdir -p archive-output
+                    rsync -av --progress ./ethervest-img-server ./archive-output
+                    cd archive-output
+                    zip -r ../ethervest-img-server.zip ethervest-img-server
+                '''
+                archiveArtifacts artifacts: 'ethervest-img-server.zip', fingerprint: true
+            }
+        }
+
        stage('env variable'){
         environment{
             db_version = '5.6'
@@ -70,6 +111,12 @@ pipeline {
     post{
         always{
             echo "i will run always and say Hello"
+        }
+                success {
+            echo 'Build and archive successful.'
+        }
+        failure {
+            echo 'Build or archiving failed.'
         }
     }
 }
